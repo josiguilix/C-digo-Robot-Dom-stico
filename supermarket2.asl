@@ -1,5 +1,5 @@
 last_order_id(1). // initial belief
-price(beer,2).
+price(beer,3).
 
 !tell_price.
 

@@ -29,8 +29,9 @@ too_much(B) :-
       +consumed(YY,MM,DD,HH,NN,SS,beer).
 
 +!bring(owner,beer)
-   :  not available(beer,fridge)
-   <- .send(supermarket, achieve, order(beer,3));
+   :  not available(beer,fridge) & super_barato(S)
+   <- .send(S, achieve, order(beer,3));
+   .print("He realizado el pedido de cervezas a ", S);
       !go_at(robot,fridge). // go to fridge and wait there.
 
 +!bring(owner,beer)
@@ -49,10 +50,21 @@ too_much(B) :-
   <- move_towards(P);
      !go_at(robot,P).
 
++!calcularPrecioMasBarato : true <-
+.findall([X,Y], price(beer,X)[source(Y)], L);
+.print("Lista de precios: ", L);
+.min(L, Min);
+.nth(1, Min, S);
+-+super_barato(S);
+.print("Super más barato: ", S).
+
+
+
 // when the supermarket makes a delivery, try the 'has' goal again
 +delivered(beer,_Qtd,_OrderId)[source(supermarket)]
   :  true
   <- +available(beer,fridge);
+      .send(supermarket,tell,msg("Me ha llegado correctamente el pedido."));
      !bring(owner,beer).
 
 // when the fridge is opened, the beer stock is perceived
@@ -63,6 +75,10 @@ too_much(B) :-
 +stock(beer,N)
    :  N > 0 & not available(beer,fridge)
    <- -+available(beer,fridge).
+
++price(beer,N)[source(Ag)] <-
+.print("Me ha llegado este precio: ", N," EU de ",Ag);
+!calcularPrecioMasBarato.
 
 +?time(T) : true
   <-  time.check(T).
