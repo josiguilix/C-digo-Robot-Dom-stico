@@ -50,7 +50,7 @@ public class HouseModel extends GridWorldModel {
         }
     }
 
-/*     boolean moveTowards(Location dest) {
+     boolean moveTowards(Location dest) {
         Location r1 = getAgPos(0);
         if (r1.x < dest.x)        r1.x++;
         else if (r1.x > dest.x)   r1.x--;
@@ -64,23 +64,8 @@ public class HouseModel extends GridWorldModel {
             view.update(lOwner.x,lOwner.y);
         }
         return true;
-    } */
+    } 
 
-    boolean moveTowards(Location dest) {
-        Location r1 = getAgPos(0);
-        if (r1.x < dest.x)        r1.x++;
-        if (r1.x > dest.x)        r1.x--;
-        if (r1.y < dest.y)        r1.y++;
-        if (r1.y > dest.y)        r1.y--;
-        setAgPos(0, r1); // move the robot in the grid
-
-        // repaint the fridge and owner locations
-        if (view != null) {
-            view.update(lFridge.x,lFridge.y);
-            view.update(lOwner.x,lOwner.y);
-        }
-        return true;
-    }
 
     boolean getBeer() {
         if (fridgeOpen && availableBeers > 0 && !carryingBeer) {
