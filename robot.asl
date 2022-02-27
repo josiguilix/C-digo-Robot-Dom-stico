@@ -2,6 +2,7 @@
 
 // initially, I believe that there is some beer in the fridge
 available(beer,fridge).
+money_to_buy(20).
 
 // my owner should not consume more than 10 beers a day :-)
 limit(beer,5).
@@ -56,15 +57,20 @@ too_much(B) :-
 .min(L, Min);
 .nth(1, Min, S);
 -+super_barato(S);
-.print("Super más barato: ", S).
+.print("Super mas barato: ", S);
+.nth(0, Min, P);
+-+precio_barato(P);
+.print("Precio mas barato: ", P).
 
 
 
 // when the supermarket makes a delivery, try the 'has' goal again
-+delivered(beer,_Qtd,_OrderId)[source(supermarket)]
-  :  true
++delivered(beer,Cantidad,_OrderId)[source(Ag)]
+  :  money_to_buy(M) & precio_barato(P)
   <- +available(beer,fridge);
-      .send(supermarket,tell,msg("Me ha llegado correctamente el pedido."));
+      -+money_to_buy(M-(P*Cantidad));
+      .print("Tengo menos dinero");
+      .send(Ag,tell,msg("Me ha llegado correctamente el pedido."));
      !bring(owner,beer).
 
 // when the fridge is opened, the beer stock is perceived
